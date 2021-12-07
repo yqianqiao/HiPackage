@@ -1,8 +1,5 @@
 package com.example.hilog
 
-import android.util.Log
-import com.example.hilog.printer.HiLogPrinter
-
 /**
  * Created by Android Studio.
  * Author: yx
@@ -10,6 +7,8 @@ import com.example.hilog.printer.HiLogPrinter
  * Description: com.example.hilog.log
  */
 object HiLog {
+    private val className = HiLog::class.java.name
+    val HI_LOG_PACKAGE = className.substring(0, className.lastIndexOf('.') + 1);
 
     fun v(vararg contents: Any) {
         log(type = HiLogType.V, contents = contents)
@@ -44,7 +43,7 @@ object HiLog {
         vararg contents: Any
     ) {
 
-        if (config.enable()) {
+        if (!config.enable()) {
             return
         }
         val sb = StringBuilder()
@@ -55,11 +54,16 @@ object HiLog {
         }
         //是否添加堆栈信息
         if (config.stackTraceDepth() > 0) {
-            val stackTrace = HI_STACK_TRACE_FORMATTER.format(Throwable().stackTrace)
+            val stackTrace = HI_STACK_TRACE_FORMATTER.format(
+                HiStackTraceUtil.getCroppedRealStackTrack(
+                    Throwable().stackTrace,
+                    HI_LOG_PACKAGE, config.stackTraceDepth()
+                )
+            )
             sb.append(stackTrace).append("\n")
         }
 
-        val body = parseBody(contents,config)
+        val body = parseBody(contents, config)
         sb.append(body)
         val printers = (config.printers())?.toMutableList() ?: HiLogManager.getInstance().printers
         if (printers.isEmpty()) {
@@ -71,8 +75,8 @@ object HiLog {
         }
     }
 
-    private fun parseBody(contents: Array<out Any>,config: HiLogConfig): String {
-        if (config.injectJsonParser()!=null){
+    private fun parseBody(contents: Array<out Any>, config: HiLogConfig): String {
+        if (config.injectJsonParser() != null) {
             return config.injectJsonParser()!!.toJson(contents)
         }
         val sb = StringBuilder()

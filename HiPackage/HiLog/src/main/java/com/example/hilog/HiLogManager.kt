@@ -22,7 +22,7 @@ class HiLogManager private constructor(
     companion object {
        private var manager: HiLogManager? = null
         fun getInstance(): HiLogManager {
-            return manager ?: throw error("未初始化 init()")
+            return manager!!
         }
 
         fun init(config: HiLogConfig, vararg printers: HiLogPrinter) {

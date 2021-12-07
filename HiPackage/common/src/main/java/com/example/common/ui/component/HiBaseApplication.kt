@@ -7,4 +7,6 @@ package com.example.common.ui.component
  * Description: com.example.common.ui.component
  */
 class HiBaseApplication {
+
+
 }

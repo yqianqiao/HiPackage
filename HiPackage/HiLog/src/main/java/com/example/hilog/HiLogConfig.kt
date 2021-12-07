@@ -16,7 +16,7 @@ val HI_STACK_TRACE_FORMATTER = HiStackTraceFormatter()
 
 abstract class HiLogConfig {
 
-   open fun injectJsonParser(): JsonParser? {
+    open fun injectJsonParser(): JsonParser? {
         return null
     }
 
@@ -30,12 +30,12 @@ abstract class HiLogConfig {
     /**
      * 是否包含线程信息
      */
-    fun includeTread() = false
+    open fun includeTread() = false
 
     /**
      * 堆栈信息深度
      */
-    fun stackTraceDepth() = 5
+    open fun stackTraceDepth() = 5
 
     /**
      * 用户注册打印器
